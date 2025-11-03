@@ -1,7 +1,5 @@
 # HydrateMate Backend API
 
-> RESTful API for HydrateMate - A smart hydration tracking application
-
 **Team**: Dorian Gutsche
 
 ## Projektbeschreibung
@@ -449,11 +447,3 @@ kill -9 <PID>
 # Clean Build
 ./gradlew clean build --refresh-dependencies
 ```
-
-## Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert.
-
----
-
-Made with ☕ and 💧 by Dorian Gutsche
