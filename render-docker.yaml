@@ -8,15 +8,15 @@ services:
     envVars:
       - key: SPRING_DATASOURCE_URL
         fromDatabase:
-          name: Hydration-DB
+          name: hydration-db
           property: connectionString
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
-          name: Hydration-DB
+          name: hydration-db
           property: user
       - key: SPRING_DATASOURCE_PASSWORD
         fromDatabase:
-          name: Hydration-DB
+          name: hydration-db
           property: password
       - key: PORT
         value: 8080
