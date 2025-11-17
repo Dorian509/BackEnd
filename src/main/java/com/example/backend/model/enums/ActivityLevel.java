@@ -1,4 +1,4 @@
-package com.example.demo.model.enums;
+package com.example.backend.model.enums;
 
 /**
  * Aktivitätslevel-Enum zur Berechnung des täglichen Hydratationsziels.

@@ -1,6 +1,6 @@
-package com.example.demo.repository;
+package com.example.backend.repository;
 
-import com.example.demo.model.entity.UserProfile;
+import com.example.backend.model.entity.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

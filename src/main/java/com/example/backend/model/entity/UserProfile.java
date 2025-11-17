@@ -1,7 +1,7 @@
-package com.example.demo.model.entity;
+package com.example.backend.model.entity;
 
-import com.example.demo.model.enums.ActivityLevel;
-import com.example.demo.model.enums.Climate;
+import com.example.backend.model.enums.ActivityLevel;
+import com.example.backend.model.enums.Climate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

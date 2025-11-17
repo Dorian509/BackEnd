@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.backend.exception;
 
 /**
  * Exception, die geworfen wird, wenn eine angeforderte Ressource nicht gefunden wurde.

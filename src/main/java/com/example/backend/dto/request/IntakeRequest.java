@@ -1,6 +1,6 @@
-package com.example.demo.dto.request;
+package com.example.backend.dto.request;
 
-import com.example.demo.model.enums.IntakeSource;
+import com.example.backend.model.enums.IntakeSource;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

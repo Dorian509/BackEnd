@@ -1,6 +1,6 @@
-package com.example.demo.dto.response;
+package com.example.backend.dto.response;
 
-import com.example.demo.model.enums.IntakeSource;
+import com.example.backend.model.enums.IntakeSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
-package com.example.demo.dto.request;
+package com.example.backend.dto.request;
 
-import com.example.demo.model.enums.ActivityLevel;
-import com.example.demo.model.enums.Climate;
+import com.example.backend.model.enums.ActivityLevel;
+import com.example.backend.model.enums.Climate;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

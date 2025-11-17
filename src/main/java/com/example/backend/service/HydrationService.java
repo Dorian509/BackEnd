@@ -1,15 +1,15 @@
-package com.example.demo.service;
+package com.example.backend.service;
 
-import com.example.demo.dto.request.IntakeRequest;
-import com.example.demo.dto.request.ProfileRequest;
-import com.example.demo.dto.response.IntakeResponse;
-import com.example.demo.dto.response.ProfileResponse;
-import com.example.demo.dto.response.TodayStatusResponse;
-import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.entity.IntakeEvent;
-import com.example.demo.model.entity.UserProfile;
-import com.example.demo.repository.IntakeEventRepository;
-import com.example.demo.repository.UserProfileRepository;
+import com.example.backend.dto.request.IntakeRequest;
+import com.example.backend.dto.request.ProfileRequest;
+import com.example.backend.dto.response.IntakeResponse;
+import com.example.backend.dto.response.ProfileResponse;
+import com.example.backend.dto.response.TodayStatusResponse;
+import com.example.backend.exception.ResourceNotFoundException;
+import com.example.backend.model.entity.IntakeEvent;
+import com.example.backend.model.entity.UserProfile;
+import com.example.backend.repository.IntakeEventRepository;
+import com.example.backend.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class HydrationService {
         };
 
         // Klima-Bonus
-        int climateBonus = profile.getClimate() == com.example.demo.model.enums.Climate.HOT ? 500 : 0;
+        int climateBonus = profile.getClimate() == com.example.backend.model.enums.Climate.HOT ? 500 : 0;
 
         // Runden auf nächste 50ml
         int totalGoal = baseGoal + activityBonus + climateBonus;

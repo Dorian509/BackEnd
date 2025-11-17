@@ -1,6 +1,6 @@
-package com.example.demo.model.entity;
+package com.example.backend.model.entity;
 
-import com.example.demo.model.enums.IntakeSource;
+import com.example.backend.model.enums.IntakeSource;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
