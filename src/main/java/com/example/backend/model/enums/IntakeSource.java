@@ -1,4 +1,4 @@
-package com.example.demo.model.enums;
+package com.example.backend.model.enums;
 
 /**
  * Quelltyp für die Wasseraufnahme-Verfolgung.

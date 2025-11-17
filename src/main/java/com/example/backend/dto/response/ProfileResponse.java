@@ -1,7 +1,7 @@
-package com.example.demo.dto.response;
+package com.example.backend.dto.response;
 
-import com.example.demo.model.enums.ActivityLevel;
-import com.example.demo.model.enums.Climate;
+import com.example.backend.model.enums.ActivityLevel;
+import com.example.backend.model.enums.Climate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

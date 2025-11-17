@@ -1,11 +1,11 @@
-package com.example.demo.controller;
+package com.example.backend.controller;
 
-import com.example.demo.dto.request.IntakeRequest;
-import com.example.demo.dto.request.ProfileRequest;
-import com.example.demo.dto.response.IntakeResponse;
-import com.example.demo.dto.response.ProfileResponse;
-import com.example.demo.dto.response.TodayStatusResponse;
-import com.example.demo.service.HydrationService;
+import com.example.backend.dto.request.IntakeRequest;
+import com.example.backend.dto.request.ProfileRequest;
+import com.example.backend.dto.response.IntakeResponse;
+import com.example.backend.dto.response.ProfileResponse;
+import com.example.backend.dto.response.TodayStatusResponse;
+import com.example.backend.service.HydrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
