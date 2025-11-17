@@ -35,3 +35,14 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Environment & System Files ###
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+
+### Application Logs ###
+*.log
+logs/
