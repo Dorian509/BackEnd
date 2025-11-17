@@ -8,18 +8,6 @@ services:
     envVars:
       - key: PORT
         value: 8080
-      - key: DB_HOST
-        fromDatabase:
-          name: hydration-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: hydration-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: hydration-db
-          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: hydration-db
