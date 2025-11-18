@@ -1,6 +1,5 @@
 package com.example.backend.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,15 +16,17 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:3000}")
-    private String[] allowedOrigins;
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Erlaubte Origins (Frontend-URLs)
-        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://frontend-b5ow.onrender.com",
+                "https://hydratemate-backend.onrender.com",
+                "http://localhost:5173",
+                "http://localhost:3000"
+        ));
 
         // Erlaubte HTTP-Methoden
         configuration.setAllowedMethods(Arrays.asList(
@@ -50,7 +51,7 @@ public class CorsConfig {
         configuration.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
