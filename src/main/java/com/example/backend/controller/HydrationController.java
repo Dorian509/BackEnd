@@ -19,6 +19,16 @@ import java.util.List;
  * REST-Controller für Hydrationsverfolgung.
  * Verarbeitet alle API-Endpunkte für Profile, Aufnahmen und Hydrationsstatus.
  */
+@CrossOrigin(
+    origins = {
+        "https://frontend-b5ow.onrender.com",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    },
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS},
+    allowedHeaders = "*",
+    allowCredentials = "true"
+)
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
