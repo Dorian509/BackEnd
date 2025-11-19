@@ -1,19 +1,24 @@
 package com.example.backend.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Request-DTO für den Benutzer-Login.
- * Verwendet die Benutzer-ID zur Identifikation.
+ * Verwendet E-Mail und Passwort zur Authentifizierung.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest {
 
-    @NotNull(message = "User ID is required")
-    private Long userId;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    private String password;
 }

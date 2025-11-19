@@ -10,5 +10,20 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
-    // Zusätzliche benutzerdefinierte Abfragen können hier bei Bedarf hinzugefügt werden
+
+    /**
+     * Findet einen Benutzer anhand seiner E-Mail-Adresse.
+     *
+     * @param email E-Mail-Adresse
+     * @return Optional mit UserProfile falls gefunden
+     */
+    java.util.Optional<UserProfile> findByEmail(String email);
+
+    /**
+     * Prüft ob eine E-Mail bereits existiert.
+     *
+     * @param email E-Mail-Adresse
+     * @return true wenn E-Mail existiert
+     */
+    boolean existsByEmail(String email);
 }
