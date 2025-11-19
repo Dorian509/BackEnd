@@ -1,29 +1,43 @@
 package com.example.backend.dto.response;
 
-import com.example.backend.model.enums.ActivityLevel;
-import com.example.backend.model.enums.Climate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Response-DTO für Authentifizierungs-Operationen.
- * Enthält Benutzer-ID und Profildaten.
+ * Enthält Token und User-Daten für Frontend.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
 
-    private Long userId;
-    private Integer weightKg;
-    private ActivityLevel activityLevel;
-    private Climate climate;
-    private String timezone;
-    private String message;
+    private String token;
+    private UserInfo user;
+    private String error;
 
-    public AuthResponse(Long userId, String message) {
-        this.userId = userId;
-        this.message = message;
+    // Nested class for user info
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfo {
+        private Long id;
+        private String email;
+        private String name;
+    }
+
+    // Constructor for success response
+    public AuthResponse(String token, Long userId, String email, String name) {
+        this.token = token;
+        this.user = new UserInfo(userId, email, name);
+        this.error = null;
+    }
+
+    // Constructor for error response
+    public static AuthResponse error(String errorMessage) {
+        AuthResponse response = new AuthResponse();
+        response.setError(errorMessage);
+        return response;
     }
 }
