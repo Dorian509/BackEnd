@@ -3,8 +3,10 @@ package com.example.backend.model.entity;
 import com.example.backend.model.enums.ActivityLevel;
 import com.example.backend.model.enums.Climate;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +26,28 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * Name des Benutzers
+     */
+    @NotBlank(message = "Name is required")
+    @Column(nullable = false)
+    private String name;
+
+    /**
+     * E-Mail-Adresse des Benutzers (eindeutig)
+     */
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    /**
+     * Passwort des Benutzers
+     */
+    @NotBlank(message = "Password is required")
+    @Column(nullable = false)
+    private String password;
 
     /**
      * Gewicht des Benutzers in Kilogramm (20-200 kg)
