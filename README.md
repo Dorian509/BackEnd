@@ -1,5 +1,8 @@
 # HydrateMate Backend API
 
+![Backend CI](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions/workflows/backend-ci.yml/badge.svg)
+![Code Quality](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/actions/workflows/code-quality.yml/badge.svg)
+
 **Team**: Dorian Gutsche
 
 ## Projektbeschreibung
