@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
@@ -36,6 +37,7 @@ import java.util.UUID;
 public class AuthController {
 
     private final UserProfileRepository userProfileRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Registriert einen neuen Benutzer.
@@ -58,7 +60,12 @@ public class AuthController {
         UserProfile profile = new UserProfile();
         profile.setName(request.getName());
         profile.setEmail(request.getEmail());
-        profile.setPassword(request.getPassword()); // TODO: Hash password in production!
+
+        // Hash password with BCrypt before storing
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+        profile.setPassword(hashedPassword);
+        log.debug("Password hashed successfully for user: {}", request.getEmail());
+
         profile.setWeightKg(request.getWeightKg());
         profile.setActivityLevel(request.getActivityLevel());
         profile.setClimate(request.getClimate());
@@ -95,9 +102,16 @@ public class AuthController {
         UserProfile profile = userProfileRepository.findByEmail(request.getEmail())
                 .orElse(null);
 
-        // Prüfe ob Benutzer existiert und Passwort stimmt
-        if (profile == null || !profile.getPassword().equals(request.getPassword())) {
-            log.warn("Login failed for email: {}", request.getEmail());
+        // Prüfe ob Benutzer existiert
+        if (profile == null) {
+            log.warn("Login failed: User not found with email {}", request.getEmail());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(AuthResponse.error("Invalid email or password"));
+        }
+
+        // Validate password using BCrypt
+        if (!passwordEncoder.matches(request.getPassword(), profile.getPassword())) {
+            log.warn("Login failed: Invalid password for user {}", request.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(AuthResponse.error("Invalid email or password"));
         }
