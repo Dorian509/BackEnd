@@ -9,6 +9,10 @@ import java.time.Instant;
 /**
  * Standard-Fehlerantwort-DTO.
  * Wird für alle Fehlerantworten in der API verwendet.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor

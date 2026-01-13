@@ -7,6 +7,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * Web-MVC-Konfiguration.
  * Zusätzliche webbezogene Konfigurationen können hier hinzugefügt werden.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

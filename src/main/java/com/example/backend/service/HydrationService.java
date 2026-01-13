@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
 /**
  * Service für hydrationsbezogene Geschäftslogik.
  * Verarbeitet Berechnungen, Datenpersistierung und Geschäftsregeln.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Service
 @RequiredArgsConstructor

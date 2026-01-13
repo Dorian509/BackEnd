@@ -15,6 +15,10 @@ import lombok.NoArgsConstructor;
 /**
  * Benutzerprofil-Entity mit persönlichen Hydrationspräferenzen.
  * Speichert Gewicht, Aktivitätslevel, Klima und Zeitzone für personalisierte Hydrationsziele.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Entity
 @Table(name = "user_profile")

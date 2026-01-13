@@ -16,6 +16,10 @@ import java.util.Map;
 /**
  * Globaler Exception-Handler für alle REST-Controller.
  * Bietet konsistente Fehlerantworten in der gesamten Anwendung.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @RestControllerAdvice
 @Slf4j

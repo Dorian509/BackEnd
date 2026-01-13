@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 /**
  * Request-DTO für die Benutzerregistrierung.
  * Erstellt einen neuen Benutzer mit Authentifizierungsdaten und Hydrationspräferenzen.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor

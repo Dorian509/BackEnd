@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 /**
  * Repository für UserProfile-Entity.
  * Bietet CRUD-Operationen und benutzerdefinierte Abfragen für Benutzerprofile.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {

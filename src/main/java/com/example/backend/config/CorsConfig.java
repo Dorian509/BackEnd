@@ -12,6 +12,10 @@ import java.util.List;
 /**
  * CORS (Cross-Origin Resource Sharing) Konfiguration.
  * Erlaubt Frontend-Anwendungen, Anfragen an diese API zu stellen.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Configuration
 public class CorsConfig {

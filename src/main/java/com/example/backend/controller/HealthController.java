@@ -13,6 +13,10 @@ import java.util.Map;
 /**
  * Health-Check-Controller.
  * Bietet Endpunkte zur Überwachung des Anwendungsstatus.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @CrossOrigin(
     origins = {

@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 /**
  * Response-DTO für den heutigen Hydrationsstatus.
  * Enthält Ziel, konsumierte Menge und verbleibende Menge.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor

@@ -18,6 +18,10 @@ import java.util.List;
 /**
  * REST-Controller für Hydrationsverfolgung.
  * Verarbeitet alle API-Endpunkte für Profile, Aufnahmen und Hydrationsstatus.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @CrossOrigin(
     origins = {

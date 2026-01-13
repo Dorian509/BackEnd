@@ -2,6 +2,10 @@ package com.example.backend.exception;
 
 /**
  * Exception, die geworfen wird, wenn eine angeforderte Ressource nicht gefunden wurde.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 public class ResourceNotFoundException extends RuntimeException {
 

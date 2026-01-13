@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 /**
  * Response-DTO für Authentifizierungs-Operationen.
  * Enthält Token und User-Daten für Frontend.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor

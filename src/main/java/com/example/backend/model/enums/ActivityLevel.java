@@ -3,6 +3,10 @@ package com.example.backend.model.enums;
 /**
  * Aktivitätslevel-Enum zur Berechnung des täglichen Hydratationsziels.
  * Höhere Aktivitätslevel erhöhen die empfohlene tägliche Wasseraufnahme.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 public enum ActivityLevel {
     /**

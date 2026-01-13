@@ -3,6 +3,10 @@ package com.example.backend.model.enums;
 /**
  * Quelltyp für die Wasseraufnahme-Verfolgung.
  * Repräsentiert verschiedene Trinkmethoden/-mengen.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 public enum IntakeSource {
     /**

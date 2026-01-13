@@ -13,6 +13,10 @@ import java.time.Instant;
 /**
  * Aufnahme-Event-Entity, die einen Wasserkonsum-Datensatz repräsentiert.
  * Verfolgt wann und wie viel Wasser ein Benutzer konsumiert hat.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Entity
 @Table(name = "intake_event", indexes = {

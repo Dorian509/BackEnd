@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 /**
  * Request-DTO für den Benutzer-Login.
  * Verwendet E-Mail und Passwort zur Authentifizierung.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor

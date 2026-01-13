@@ -12,6 +12,10 @@ import java.util.List;
 /**
  * Repository für IntakeEvent-Entity.
  * Bietet CRUD-Operationen und benutzerdefinierte Abfragen für Aufnahme-Events.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Repository
 public interface IntakeEventRepository extends JpaRepository<IntakeEvent, Long> {

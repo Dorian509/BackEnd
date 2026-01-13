@@ -19,6 +19,10 @@ import java.util.UUID;
 /**
  * REST-Controller für Authentifizierungs-Operationen.
  * Verarbeitet Registrierung und Login von Benutzern.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @CrossOrigin(
     origins = {

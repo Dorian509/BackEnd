@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 
 /**
  * Request-DTO zum Erfassen eines Wasseraufnahme-Events.
+ *
+ * @author Dorian509
+ * @version 1.0
+ * @since 2025-01-13
  */
 @Data
 @NoArgsConstructor
