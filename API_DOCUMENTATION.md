@@ -20,7 +20,147 @@ Complete REST API documentation for HydrateMate Backend
 
 ## Authentication
 
-Currently, the API does not require authentication. Future versions may implement JWT-based authentication.
+The API uses a token-based authentication system. After registering or logging in, you receive a token that should be used for authenticated requests.
+
+**Current Implementation**: Simple Base64-encoded tokens (UUID-based)
+**Production Recommendation**: Implement JWT tokens with expiration
+
+### POST /api/auth/register
+
+Register a new user account.
+
+**Request Body**:
+
+```json
+{
+  "name": "Max Mustermann",
+  "email": "max@example.com",
+  "password": "securePassword123",
+  "weightKg": 75,
+  "activityLevel": "MEDIUM",
+  "climate": "NORMAL",
+  "timezone": "Europe/Berlin"
+}
+```
+
+**Fields**:
+- `name` (required): User's full name
+- `email` (required): Valid email address (must be unique)
+- `password` (required): User password (will be hashed with BCrypt)
+- `weightKg` (required): Body weight in kilograms (20-200)
+- `activityLevel` (required): Activity level - `LOW`, `MEDIUM`, or `HIGH`
+- `climate` (required): Climate condition - `NORMAL` or `HOT`
+- `timezone` (optional): User's timezone, defaults to "Europe/Berlin"
+
+**Response**: `201 Created`
+
+```json
+{
+  "token": "MToxMjM0NTY3OC1hYmNkLWVmZ2gtaWprbC1tbm9wcXJzdHV2dzoxNzA5MjQ1MjAwMDAw",
+  "user": {
+    "id": 1,
+    "email": "max@example.com",
+    "name": "Max Mustermann"
+  }
+}
+```
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Max Mustermann",
+    "email": "max@example.com",
+    "password": "securePassword123",
+    "weightKg": 75,
+    "activityLevel": "MEDIUM",
+    "climate": "NORMAL",
+    "timezone": "Europe/Berlin"
+  }'
+```
+
+**Errors**:
+- `409 Conflict`: Email already exists
+- `400 Bad Request`: Validation errors (invalid email, weight out of range, etc.)
+
+### POST /api/auth/login
+
+Authenticate an existing user.
+
+**Request Body**:
+
+```json
+{
+  "email": "max@example.com",
+  "password": "securePassword123"
+}
+```
+
+**Fields**:
+- `email` (required): User's email address
+- `password` (required): User's password
+
+**Response**: `200 OK`
+
+```json
+{
+  "token": "MToxMjM0NTY3OC1hYmNkLWVmZ2gtaWprbC1tbm9wcXJzdHV2dzoxNzA5MjQ1MjAwMDAw",
+  "user": {
+    "id": 1,
+    "email": "max@example.com",
+    "name": "Max Mustermann"
+  }
+}
+```
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "max@example.com",
+    "password": "securePassword123"
+  }'
+```
+
+**Errors**:
+- `401 Unauthorized`: Invalid email or password
+
+### GET /api/auth/profile/{userId}
+
+Get user profile information (without token).
+
+**Path Parameters**:
+- `userId`: User ID
+
+**Response**: `200 OK`
+
+```json
+{
+  "user": {
+    "id": 1,
+    "email": "max@example.com",
+    "name": "Max Mustermann"
+  }
+}
+```
+
+**Example**:
+
+```bash
+curl http://localhost:8080/api/auth/profile/1
+```
+
+**Errors**:
+- `404 Not Found`: User not found
+
+**Security Notes**:
+- Passwords are hashed using BCrypt (10 rounds) before storage
+- Never store or transmit passwords in plain text
+- Tokens should be stored securely on the client side
 
 ---
 
@@ -59,51 +199,7 @@ Detailed health check with application metrics.
 
 ## User Profile
 
-### POST /api/profile
-
-Create a new user profile with hydration settings.
-
-**Request Body**:
-
-```json
-{
-  "weightKg": 75,
-  "activityLevel": "MEDIUM",
-  "climate": "NORMAL",
-  "timezone": "Europe/Berlin"
-}
-```
-
-**Fields**:
-- `weightKg` (required): Body weight in kilograms (20-200)
-- `activityLevel` (required): Activity level - `LOW`, `MEDIUM`, or `HIGH`
-- `climate` (required): Climate condition - `NORMAL` or `HOT`
-- `timezone` (optional): User's timezone, defaults to "Europe/Berlin"
-
-**Response**: `201 Created`
-
-```json
-{
-  "id": 1,
-  "weightKg": 75,
-  "activityLevel": "MEDIUM",
-  "climate": "NORMAL",
-  "timezone": "Europe/Berlin"
-}
-```
-
-**Example**:
-
-```bash
-curl -X POST http://localhost:8080/api/profile \
-  -H "Content-Type: application/json" \
-  -d '{
-    "weightKg": 75,
-    "activityLevel": "MEDIUM",
-    "climate": "NORMAL",
-    "timezone": "Europe/Berlin"
-  }'
-```
+**Note**: User profiles are created automatically during registration via `/api/auth/register`. Use the endpoints below to retrieve or update existing profiles.
 
 ### GET /api/profile/{id}
 
@@ -369,6 +465,24 @@ Validation errors return additional detail about which fields failed validation:
 }
 ```
 
+### Authentication Errors
+
+**Email Already Exists** (Registration):
+
+```json
+{
+  "error": "Email already exists"
+}
+```
+
+**Invalid Credentials** (Login):
+
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
 ### HTTP Status Codes
 
 | Code | Description |
@@ -377,12 +491,44 @@ Validation errors return additional detail about which fields failed validation:
 | `201 Created` | Successful POST request, resource created |
 | `204 No Content` | Successful DELETE request |
 | `400 Bad Request` | Invalid input, validation errors |
+| `401 Unauthorized` | Authentication failed (invalid credentials) |
 | `404 Not Found` | Resource not found |
+| `409 Conflict` | Resource conflict (e.g., email already exists) |
 | `500 Internal Server Error` | Unexpected server error |
 
 ---
 
 ## Data Models
+
+### UserProfile
+
+The user profile entity stores user information and hydration preferences.
+
+**Fields**:
+- `id` (Long): Unique user identifier
+- `name` (String): User's full name
+- `email` (String): User's email address (unique)
+- `password` (String): BCrypt-hashed password (never returned in API responses)
+- `weightKg` (Integer): Body weight in kilograms (20-200)
+- `activityLevel` (ActivityLevel): Physical activity level
+- `climate` (Climate): Climate conditions
+- `timezone` (String): User's timezone (default: "Europe/Berlin")
+
+**Database Schema**:
+```sql
+CREATE TABLE user_profile (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    weight_kg INTEGER NOT NULL CHECK (weight_kg >= 20 AND weight_kg <= 200),
+    activity_level VARCHAR(20) NOT NULL DEFAULT 'MEDIUM',
+    climate VARCHAR(20) NOT NULL DEFAULT 'NORMAL',
+    timezone VARCHAR(50) NOT NULL DEFAULT 'Europe/Berlin'
+);
+
+CREATE INDEX idx_user_email ON user_profile(email);
+```
 
 ### ActivityLevel (Enum)
 
@@ -457,21 +603,35 @@ Calculation:
 # 1. Check API is running
 curl http://localhost:8080/
 
-# 2. Create a user profile
-curl -X POST http://localhost:8080/api/profile \
+# 2. Register a new user
+curl -X POST http://localhost:8080/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
+    "name": "Max Mustermann",
+    "email": "max@example.com",
+    "password": "securePassword123",
     "weightKg": 75,
     "activityLevel": "MEDIUM",
     "climate": "NORMAL",
     "timezone": "Europe/Berlin"
   }'
-# Save the returned ID (e.g., 1)
+# Save the returned user ID and token
 
-# 3. Get today's status (should be 0ml consumed)
+# 3. Login (for returning users)
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "max@example.com",
+    "password": "securePassword123"
+  }'
+
+# 4. Get user profile
+curl http://localhost:8080/api/auth/profile/1
+
+# 5. Get today's status (should be 0ml consumed initially)
 curl http://localhost:8080/api/hydration/today/1
 
-# 4. Record a water intake
+# 6. Record a water intake
 curl -X POST http://localhost:8080/api/intakes \
   -H "Content-Type: application/json" \
   -d '{
@@ -480,13 +640,13 @@ curl -X POST http://localhost:8080/api/intakes \
     "source": "GLASS"
   }'
 
-# 5. Check updated status
+# 7. Check updated status
 curl http://localhost:8080/api/hydration/today/1
 
-# 6. Get recent intakes
+# 8. Get recent intakes
 curl http://localhost:8080/api/intakes/1/recent?limit=10
 
-# 7. Update profile (e.g., change activity level)
+# 9. Update profile (e.g., change activity level)
 curl -X PUT http://localhost:8080/api/profile/1 \
   -H "Content-Type: application/json" \
   -d '{
@@ -496,7 +656,7 @@ curl -X PUT http://localhost:8080/api/profile/1 \
     "timezone": "Europe/Berlin"
   }'
 
-# 8. Check new goal after profile update
+# 10. Check new goal after profile update
 curl http://localhost:8080/api/hydration/today/1
 ```
 
@@ -515,11 +675,25 @@ You can import these endpoints into Postman for easier testing:
 
 ## Rate Limiting
 
-Currently, there is no rate limiting implemented. This may be added in future versions.
+Currently, there is no rate limiting implemented.
+
+**Production Recommendation**:
+- Implement rate limiting for authentication endpoints to prevent brute-force attacks
+- Suggested limits:
+  - `/api/auth/register`: 5 requests per hour per IP
+  - `/api/auth/login`: 10 requests per 15 minutes per IP
+  - Other endpoints: 100 requests per minute per user
 
 ---
 
 ## Changelog
+
+### Version 1.1.0 (2025-01-15)
+- Added user authentication (register, login)
+- BCrypt password hashing for security
+- Token-based authentication
+- User profile now includes name and email
+- Email uniqueness validation
 
 ### Version 1.0.0 (2024-11-01)
 - Initial API release
@@ -530,6 +704,6 @@ Currently, there is no rate limiting implemented. This may be added in future ve
 
 ---
 
-**Last Updated**: 2024-11-01
-**API Version**: 1.0.0
-**Documentation Version**: 1.0.0
+**Last Updated**: 2025-01-15
+**API Version**: 1.1.0
+**Documentation Version**: 1.1.0

@@ -124,4 +124,68 @@ class HydrationServiceTest {
         verify(intakeRepository).existsById(999L);
         verify(intakeRepository, never()).deleteById(anyLong());
     }
+
+    @Test
+    void calculateDailyGoalMl_withHighActivityHotClimate_shouldReturnMaximumGoal() {
+        // Gegeben: 75kg, HIGH activity (+500ml), HOT Klima (+500ml)
+        // Basis: 75 * 35 = 2625ml + Aktivität: 500ml + Klima: 500ml = 3625ml
+        // Gerundet auf nächste 50ml = 3650ml
+        testProfile.setWeightKg(75);
+        testProfile.setActivityLevel(ActivityLevel.HIGH);
+        testProfile.setClimate(Climate.HOT);
+
+        // Wenn
+        int goalMl = hydrationService.calculateDailyGoalMl(testProfile);
+
+        // Dann
+        assertThat(goalMl).isEqualTo(3650);
+    }
+
+    @Test
+    void calculateDailyGoalMl_withLowActivityNormalClimate_shouldReturnMinimumGoal() {
+        // Gegeben: 70kg, LOW activity (+0ml), NORMAL Klima (+0ml)
+        // Basis: 70 * 35 = 2450ml + Aktivität: 0ml + Klima: 0ml = 2450ml
+        testProfile.setActivityLevel(ActivityLevel.LOW);
+        testProfile.setClimate(Climate.NORMAL);
+
+        // Wenn
+        int goalMl = hydrationService.calculateDailyGoalMl(testProfile);
+
+        // Dann
+        assertThat(goalMl).isEqualTo(2450);
+    }
+
+    @Test
+    void getTodayStatus_withOverConsumption_shouldReturnPercentageOver100() {
+        // Gegeben - Benutzer hat mehr als Ziel getrunken (4000ml konsumiert, 2700ml Ziel)
+        doReturn(Optional.of(testProfile)).when(profileRepository).findById(1L);
+        doReturn(4000).when(intakeRepository).sumForUserBetween(anyLong(), any(Instant.class), any(Instant.class));
+
+        // Wenn
+        TodayStatusResponse status = hydrationService.getTodayStatus(1L);
+
+        // Dann
+        assertThat(status).isNotNull();
+        assertThat(status.getGoalMl()).isEqualTo(2700);
+        assertThat(status.getConsumedMl()).isEqualTo(4000);
+        assertThat(status.getRemainingMl()).isEqualTo(0); // Bei Überschreitung auf 0 begrenzt
+        assertThat(status.getPercentageAchieved()).isEqualTo(148); // 4000/2700 * 100 = 148%
+    }
+
+    @Test
+    void getTodayStatus_withNoConsumption_shouldReturnZeroProgress() {
+        // Gegeben - Benutzer hat heute noch nichts getrunken
+        doReturn(Optional.of(testProfile)).when(profileRepository).findById(1L);
+        doReturn(0).when(intakeRepository).sumForUserBetween(anyLong(), any(Instant.class), any(Instant.class));
+
+        // Wenn
+        TodayStatusResponse status = hydrationService.getTodayStatus(1L);
+
+        // Dann
+        assertThat(status).isNotNull();
+        assertThat(status.getGoalMl()).isEqualTo(2700);
+        assertThat(status.getConsumedMl()).isEqualTo(0);
+        assertThat(status.getRemainingMl()).isEqualTo(2700);
+        assertThat(status.getPercentageAchieved()).isEqualTo(0);
+    }
 }

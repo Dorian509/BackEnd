@@ -53,4 +53,60 @@ class UserProfileRepositoryTest {
         assertThat(found.get().getName()).isEqualTo("Test User");
         assertThat(found.get().getWeightKg()).isEqualTo(70);
     }
+
+    @Test
+    void findByEmail_withNonExistentEmail_shouldReturnEmpty() {
+        // Wenn - Suche nach nicht existierender Email
+        Optional<UserProfile> found = userProfileRepository.findByEmail("nonexistent@example.com");
+
+        // Dann - Leeres Optional erwartet
+        assertThat(found).isEmpty();
+    }
+
+    @Test
+    void existsByEmail_withExistingEmail_shouldReturnTrue() {
+        // Wenn - Prüfung ob existierende Email vorhanden ist
+        boolean exists = userProfileRepository.existsByEmail("test@example.com");
+
+        // Dann - True erwartet
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void existsByEmail_withNonExistentEmail_shouldReturnFalse() {
+        // Wenn - Prüfung ob nicht existierende Email vorhanden ist
+        boolean exists = userProfileRepository.existsByEmail("nonexistent@example.com");
+
+        // Dann - False erwartet
+        assertThat(exists).isFalse();
+    }
+
+    @Test
+    void save_shouldPersistUserProfileWithAllFields() {
+        // Gegeben - Neues Benutzerprofil mit allen Feldern
+        UserProfile newProfile = new UserProfile();
+        newProfile.setName("New User");
+        newProfile.setEmail("new@example.com");
+        newProfile.setPassword("hashedPassword");
+        newProfile.setWeightKg(80);
+        newProfile.setActivityLevel(ActivityLevel.HIGH);
+        newProfile.setClimate(Climate.HOT);
+        newProfile.setTimezone("America/New_York");
+
+        // Wenn - Profil wird gespeichert
+        UserProfile saved = userProfileRepository.save(newProfile);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Dann - Alle Felder korrekt persistiert
+        Optional<UserProfile> found = userProfileRepository.findById(saved.getId());
+        assertThat(found).isPresent();
+        assertThat(found.get().getName()).isEqualTo("New User");
+        assertThat(found.get().getEmail()).isEqualTo("new@example.com");
+        assertThat(found.get().getPassword()).isEqualTo("hashedPassword");
+        assertThat(found.get().getWeightKg()).isEqualTo(80);
+        assertThat(found.get().getActivityLevel()).isEqualTo(ActivityLevel.HIGH);
+        assertThat(found.get().getClimate()).isEqualTo(Climate.HOT);
+        assertThat(found.get().getTimezone()).isEqualTo("America/New_York");
+    }
 }

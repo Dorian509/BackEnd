@@ -10,32 +10,37 @@
 HydrateMate ist ein intelligenter Wasser-Tracker, der den täglichen Wasserbedarf berechnet und beim Erreichen des Ziels unterstützt.
 
 **Features**:
+- Benutzerregistrierung und Login mit sicherer Passwortverschlüsselung (BCrypt)
 - Personalisierte Bedarfsberechnung basierend auf Gewicht, Aktivitätslevel und Klimazone
 - Einfaches Tracking von Wasseraufnahme
 - Tägliche Statistiken und Fortschritt
 - RESTful API für Frontend-Integration
+- Token-basierte Authentifizierung
 
 ## Tech Stack
 
 - **Framework**: Spring Boot 3.5.6
-- **Language**: Java 25
-- **Database**: PostgreSQL
+- **Language**: Java 21
+- **Database**: PostgreSQL (Production), H2 (Testing)
 - **ORM**: JPA/Hibernate
 - **Build Tool**: Gradle
+- **Security**: BCrypt Password Hashing
 - **Additional Libraries**:
   - Lombok (Boilerplate reduction)
   - Spring Boot Validation
   - Spring Boot Actuator (Monitoring)
+  - Spring Security Crypto (Password hashing)
   - HikariCP (Connection pooling)
 
 ## Projektstruktur
 
 ```
-src/main/java/com/example/demo/
+src/main/java/com/example/backend/
 ├── config/              # Konfigurationsklassen
 │   ├── CorsConfig.java
 │   └── WebConfig.java
 ├── controller/          # REST Controller
+│   ├── AuthController.java
 │   ├── HealthController.java
 │   └── HydrationController.java
 ├── service/             # Business Logic
@@ -53,9 +58,12 @@ src/main/java/com/example/demo/
 │       └── IntakeSource.java (SIP, DOUBLE_SIP, GLASS)
 ├── dto/
 │   ├── request/        # Request DTOs
+│   │   ├── RegisterRequest.java
+│   │   ├── LoginRequest.java
 │   │   ├── ProfileRequest.java
 │   │   └── IntakeRequest.java
 │   └── response/       # Response DTOs
+│       ├── AuthResponse.java
 │       ├── ProfileResponse.java
 │       ├── IntakeResponse.java
 │       ├── TodayStatusResponse.java
@@ -63,12 +71,12 @@ src/main/java/com/example/demo/
 ├── exception/          # Exception Handling
 │   ├── ResourceNotFoundException.java
 │   └── GlobalExceptionHandler.java
-└── DemoApplication.java  # Main Application
+└── BackendApplication.java  # Main Application
 ```
 
 ## Voraussetzungen
 
-- Java 25 oder höher
+- Java 21 oder höher
 - PostgreSQL 12 oder höher
 - Gradle 8.x
 - (Optional) Docker für PostgreSQL
@@ -130,6 +138,8 @@ Die API ist verfügbar unter `http://localhost:8080`
 
 ## API Dokumentation
 
+Detaillierte API-Dokumentation findest du in [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+
 ### Health Check
 
 #### GET /
@@ -145,6 +155,85 @@ Response:
   "status": "ok",
   "timestamp": "2024-11-01T12:00:00Z"
 }
+```
+
+### Authentifizierung
+
+#### POST /api/auth/register
+Neuen Benutzer registrieren
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Max Mustermann",
+    "email": "max@example.com",
+    "password": "securePassword123",
+    "weightKg": 75,
+    "activityLevel": "MEDIUM",
+    "climate": "NORMAL",
+    "timezone": "Europe/Berlin"
+  }'
+```
+
+**Parameter**:
+- `name`: Name des Benutzers
+- `email`: E-Mail-Adresse (eindeutig)
+- `password`: Passwort (wird mit BCrypt gehasht)
+- `weightKg` (20-200): Gewicht in Kilogramm
+- `activityLevel`: `LOW`, `MEDIUM`, oder `HIGH`
+- `climate`: `NORMAL` oder `HOT`
+- `timezone`: Zeitzone (z.B. "Europe/Berlin")
+
+Response:
+```json
+{
+  "token": "base64EncodedToken",
+  "user": {
+    "id": 1,
+    "email": "max@example.com",
+    "name": "Max Mustermann"
+  }
+}
+```
+
+#### POST /api/auth/login
+Benutzer anmelden
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "max@example.com",
+    "password": "securePassword123"
+  }'
+```
+
+**Parameter**:
+- `email`: E-Mail-Adresse
+- `password`: Passwort
+
+Response:
+```json
+{
+  "token": "base64EncodedToken",
+  "user": {
+    "id": 1,
+    "email": "max@example.com",
+    "name": "Max Mustermann"
+  }
+}
+```
+
+**Fehler**:
+- `401 Unauthorized`: Ungültige E-Mail oder Passwort
+- `409 Conflict`: E-Mail bereits registriert (nur bei Register)
+
+#### GET /api/auth/profile/{userId}
+Benutzerprofil abrufen
+
+```bash
+curl http://localhost:8080/api/auth/profile/1
 ```
 
 ### Benutzerprofil
@@ -303,12 +392,19 @@ Gesamt-Bedarf = (Basis + Aktivität + Klima)
 ```sql
 CREATE TABLE user_profile (
     id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     weight_kg INTEGER NOT NULL CHECK (weight_kg >= 20 AND weight_kg <= 200),
     activity_level VARCHAR(20) NOT NULL DEFAULT 'MEDIUM',
     climate VARCHAR(20) NOT NULL DEFAULT 'NORMAL',
     timezone VARCHAR(50) NOT NULL DEFAULT 'Europe/Berlin'
 );
+
+CREATE INDEX idx_user_email ON user_profile(email);
 ```
+
+**Hinweis**: Passwörter werden mit BCrypt gehasht gespeichert (nie im Klartext!)
 
 ### intake_event
 ```sql
@@ -395,7 +491,7 @@ Spring Boot Actuator Endpoints:
 
 ```dockerfile
 # Dockerfile Beispiel
-FROM eclipse-temurin:25-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 COPY build/libs/*.jar app.jar
 EXPOSE 8080
@@ -421,6 +517,21 @@ docker run -p 8080:8080 \
 - [ ] Datenbank-Backups einrichten
 - [ ] Monitoring mit Actuator einrichten
 - [ ] `spring.jpa.show-sql=false` setzen
+- [ ] JWT-basierte Authentifizierung implementieren (aktuell: einfache Token)
+- [ ] Rate Limiting für Auth-Endpoints einrichten
+- [ ] Passwort-Komplexitätsregeln konfigurieren
+
+## Sicherheitsfeatures
+
+### Password Hashing
+- Passwörter werden mit **BCrypt** gehasht (Strength: 10 Rounds)
+- Niemals Klartext-Passwörter in der Datenbank
+- Passwort-Verifikation via `PasswordEncoder.matches()`
+
+### Authentifizierung
+- Aktuell: Einfaches Base64-Token-System (UUID-basiert)
+- **Für Production**: JWT-Token mit Expiration empfohlen
+- CORS konfiguriert für Frontend-Domains
 
 ## Troubleshooting
 

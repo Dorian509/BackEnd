@@ -99,4 +99,52 @@ HydrationControllerTest {
 
         verify(hydrationService).recordIntake(any(IntakeRequest.class));
     }
+
+    @Test
+    void createProfile_withInvalidWeightTooLow_shouldReturn400BadRequest() throws Exception {
+        // Gegeben - Gewicht unter Minimum (20kg)
+        ProfileRequest request = new ProfileRequest(15, ActivityLevel.MEDIUM, Climate.NORMAL, "Europe/Berlin");
+
+        // Wenn & Dann - Bad Request Error erwartet
+        mockMvc.perform(post("/api/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createProfile_withInvalidWeightTooHigh_shouldReturn400BadRequest() throws Exception {
+        // Gegeben - Gewicht über Maximum (200kg)
+        ProfileRequest request = new ProfileRequest(250, ActivityLevel.MEDIUM, Climate.NORMAL, "Europe/Berlin");
+
+        // Wenn & Dann - Bad Request Error erwartet
+        mockMvc.perform(post("/api/profile")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addIntake_withInvalidVolumeTooLow_shouldReturn400BadRequest() throws Exception {
+        // Gegeben - Volume unter Minimum (0ml)
+        IntakeRequest request = new IntakeRequest(1L, 0, IntakeSource.SIP);
+
+        // Wenn & Dann - Bad Request Error erwartet
+        mockMvc.perform(post("/api/intakes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void addIntake_withNegativeVolume_shouldReturn400BadRequest() throws Exception {
+        // Gegeben - Negatives Volume
+        IntakeRequest request = new IntakeRequest(1L, -100, IntakeSource.SIP);
+
+        // Wenn & Dann - Bad Request Error erwartet
+        mockMvc.perform(post("/api/intakes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
 }
